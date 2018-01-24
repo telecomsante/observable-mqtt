@@ -1,0 +1,41 @@
+{
+  "name": "observable-mqtt",
+  "version": "0.0.0",
+  "description": "Follow a MQTT.js subscription through an Observable",
+  "main": "index.js",
+  "scripts": {
+    "pretest": "eslint --ignore-path .gitignore .",
+    "test": "nyc ava",
+    "posttest": "nyc report --reporter=html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/telecomsante/observable-mqtt.git"
+  },
+  "keywords": [
+    "observable",
+    "mqtt",
+    "subscription"
+  ],
+  "files": [
+    "index.js",
+    "tools.js"
+  ],
+  "author": "Telecom Sante",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/telecomsante/observable-mqtt/issues"
+  },
+  "homepage": "https://github.com/telecomsante/observable-mqtt#readme",
+  "devDependencies": {
+    "ava": "^0.24.0",
+    "eslint": "^4.16.0",
+    "eslint-plugin-fp": "^2.3.0",
+    "eslint-plugin-import": "^2.8.0",
+    "mqtt": "^2.15.1",
+    "nyc": "^11.4.1",
+    "testdouble": "^3.3.3",
+    "uuid": "^3.2.1",
+    "zen-observable": "^0.7.1"
+  }
+}

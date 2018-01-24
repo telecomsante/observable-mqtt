@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+
+  dev:
+    image: node:8.9.4-alpine
+    restart: "unless-stopped"
+    user: "node"
+    volumes:
+      - .:/home/node/app
+    working_dir: "/home/node/app"
+    command: "sh -c 'while true; do sleep 60; done'"
+
+  mqtt:
+    image: gautaz/mosquitto-fixes:1.4.14-1
+    restart: "unless-stopped"
