@@ -17,6 +17,6 @@ export default scenario => {
   // eslint-disable-next-line fp/no-nil
   td.when(mqtt.subscribe(td.matchers.anything())).thenCallback(null, {granted: []});
   td.when(mqtt.on('message', td.matchers.isA(Function))).thenDo((_, messageHandler) => runScenario(scenario, messageHandler));
-  td.when(mqtt.on('close'), {delay: scenario.reduce((a, [ms]) => a + ms, 50)}).thenCallback();
+  td.when(mqtt.on('end'), {delay: scenario.reduce((a, [ms]) => a + ms, 50)}).thenCallback();
   return mqtt;
 };

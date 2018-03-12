@@ -8,8 +8,23 @@ import {promisify} from '../tools';
 import observableMQTT from '..';
 
 const subscriber = observableMQTT(Observable);
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-test(t => {
+test('inexistent host', t => {
+  const connection = connect({host: 'inexistent_host'});
+  const end = promisify(connection.end.bind(connection, true));
+  const subscribe = subscriber(connection);
+  const subscription = subscribe('truc');
+  t.plan(1);
+  return Promise.all([
+    wait(100).then(() => end()),
+    subscription
+      .forEach(() => t.fail())
+      .then(() => t.pass())
+  ]);
+});
+
+test('wildcard topics', t => {
   const connection1 = connect({host: 'mqtt', port: 1883});
   const connection2 = connect({host: 'mqtt', port: 1883});
   const subscribe = subscriber(connection1);

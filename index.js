@@ -11,7 +11,8 @@ module.exports = Observable => mqtt => {
     return new Observable(observer => sideEffects(
       subscription.then(granted => observer.next({granted}), err => observer.error(err)),
       mqtt.on('message', (topic, message) => match(topic) ? observer.next({topic, message}) : false),
-      mqtt.on('close', () => mqtt.disconnecting ? observer.complete() : false)
+      mqtt.on('end', () => observer.complete()),
+      mqtt.on('error', error => mqtt.disconnecting ? observer.error(error) : observer.next({error}))
     ) && (() => unsubscribe(topics).catch(() => true))); // unsubscribe can fail during disconnection
   };
 };
