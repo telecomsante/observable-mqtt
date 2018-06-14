@@ -13,7 +13,7 @@ test('a failed subscription throws an error', t => {
   const mqtt = td.object(['subscribe', 'unsubscribe', 'on']);
   const observable = subscribe(mqtt);
   t.plan(1);
-  td.when(mqtt.subscribe('blub/blob')).thenCallback(new Error('test'));
+  td.when(mqtt.subscribe('blub/blob'), {ignoreExtraArgs: true}).thenDo((t, o, cb) => cb(new Error('test')));
   return t.throws(observable('blub/blob').forEach(() => t.fail()), Error, 'test');
 });
 
@@ -53,11 +53,25 @@ test('granted is passed as a new value', t => {
   const granted = [{topic, qos: 0}];
   t.plan(2);
   // eslint-disable-next-line fp/no-nil
-  td.when(mqtt.subscribe(topic)).thenCallback(null, granted);
+  td.when(mqtt.subscribe(topic), {ignoreExtraArgs: true}).thenDo((t, o, cb) => cb(null, granted));
   td.when(mqtt.on('end'), {delay: 10}).thenCallback();
   return t.notThrows(observable(topic).forEach(({granted: receivedGranted}) => {
     return t.deepEqual(receivedGranted, granted);
   }));
+});
+
+test('subscribe options are passed along', t => {
+  const mqtt = td.object(['subscribe', 'unsubscribe', 'on']);
+  const options = {qos: 1};
+  const observable = subscribe(mqtt);
+  const topic = 'blub/blob';
+  t.plan(2);
+  // eslint-disable-next-line fp/no-nil
+  td.when(mqtt.subscribe(topic, td.matchers.argThat(arg => {
+    t.deepEqual(arg, options);
+  }))).thenCallback();
+  td.when(mqtt.on('end'), {delay: 10}).thenCallback();
+  return t.notThrows(observable(topic, options).forEach(() => void 0));
 });
 
 [{

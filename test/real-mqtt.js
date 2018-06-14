@@ -24,6 +24,18 @@ test('inexistent host', t => {
   ]);
 });
 
+test('grant with right options', t => {
+  const connection = connect({host: 'mqtt', port: 1883});
+  const subscribe = subscriber(connection);
+  const topic = `${uuid()}/test`;
+  const qos = 1;
+  t.plan(2);
+  // eslint-disable-next-line fp/no-nil
+  return t.notThrows(subscribe(topic, {qos}).forEach(
+    ({granted: receivedGranted}) => connection.end(() => t.deepEqual(receivedGranted, [{topic, qos}]))
+  ));
+});
+
 test('wildcard topics', t => {
   const connection1 = connect({host: 'mqtt', port: 1883});
   const connection2 = connect({host: 'mqtt', port: 1883});

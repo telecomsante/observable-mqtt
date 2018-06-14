@@ -3,10 +3,10 @@ const {arrayize, topicsMatcher, sideEffects, promisify} = require('./tools');
 module.exports = Observable => mqtt => {
   const subscribe = promisify(mqtt.subscribe.bind(mqtt));
   const unsubscribe = promisify(mqtt.unsubscribe.bind(mqtt));
-  return (topic) => {
+  return (topic, options = {}) => {
     const topics = arrayize(topic);
     const match = topicsMatcher(topics);
-    const subscription = subscribe(topic);
+    const subscription = subscribe(topic, options);
     // the MQTT side effects are encapsulated in the Observable monad (at least I hope so)
     return new Observable(observer => sideEffects(
       subscription.then(granted => observer.next({granted}), err => observer.error(err)),

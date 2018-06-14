@@ -13,11 +13,13 @@ const {connect} = require('mqtt');
 
 const subscribe = observableMQTT(connect({host:'mqtt', port: 1883}));
 
-subscribe(['root/lvl1/+', 'root/lvl2/#'])
+subscribe(['root/lvl1/+', 'root/lvl2/#'], {qos: 1})
   .map(({topic, message}) => {
     if (topic) { console.log(message.toString()); }
   });
 ```
+
+`subscribe` takes the same arguments than [MQTT.js subscribe] but for the last `callback` argument.
 
 > The library was tested with [zen-observable](https://github.com/zenparsing/zen-observable) but any compliant [Observable] library should be usable.
 
@@ -28,4 +30,5 @@ The Observable returned by `subscribe(...)` will emit three types of values:
 - `{error: new Error('some error')}`: this type of value is emitted only when a [reconnecting MQTT client](https://github.com/mqttjs/MQTT.js#mqttclientreconnecting) is used and an error was reported by the MQTT client (see [Event 'error'](https://github.com/mqttjs/MQTT.js#event-error)).
 
 [MQTT.js]: https://github.com/mqttjs/MQTT.js
+[MQTT.js subscribe]: https://github.com/mqttjs/MQTT.js#mqttclientsubscribetopictopic-arraytopic-object-options-callback
 [Observable]: https://github.com/tc39/proposal-observable

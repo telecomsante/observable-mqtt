@@ -15,7 +15,7 @@ export default scenario => {
   };
   // Node.js callbacks enforce null error parameter on success
   // eslint-disable-next-line fp/no-nil
-  td.when(mqtt.subscribe(td.matchers.anything())).thenCallback(null, {granted: []});
+  td.when(mqtt.subscribe(td.matchers.anything()), {ignoreExtraArgs: true}).thenDo((t, o, cb) => cb(null, {granted: []}));
   td.when(mqtt.on('message', td.matchers.isA(Function))).thenDo((_, messageHandler) => runScenario(scenario, messageHandler));
   td.when(mqtt.on('end'), {delay: scenario.reduce((a, [ms]) => a + ms, 50)}).thenCallback();
   return mqtt;
